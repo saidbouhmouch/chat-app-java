@@ -18,9 +18,9 @@ public class ChatApp {
         
         //LoginFrame lf = new LoginFrame();
          ChatFrame cf = new ChatFrame();
-          cf.setVisible(true);
-          cf.initConnection();
-        cf.ReciveMessage();
+          cf.open();
+           // cf.initConnection();
+           // cf.ReciveMessage();
     }
     
 }

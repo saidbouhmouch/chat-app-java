@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JViewport;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -28,6 +29,9 @@ import javax.swing.border.EmptyBorder;
  * @author mac
  */
 public class ChatFrame extends javax.swing.JFrame {
+
+    int height = 0;    
+    int nbrPanel = 0;
 
   Socket _socket;
   ObjectOutputStream _send;
@@ -38,7 +42,10 @@ public class ChatFrame extends javax.swing.JFrame {
    */
   public ChatFrame() {
     initComponents();
-    addComponent("","");
+    for (int i = 0; i < 19; i++) {
+      addComponent("", "");
+    }
+
   }
 
   public void initConnection() {
@@ -75,6 +82,13 @@ public class ChatFrame extends javax.swing.JFrame {
     }
   }
 
+  public void refreshScrollPane(){
+     pnlContent.setPreferredSize(new Dimension(1021,height+ (nbrPanel * 10)));
+     jScrollPane1.setViewportView(pnlContent);
+     jScrollPane1.revalidate();
+     jScrollPane1.repaint();
+  }
+
   public void handleSend() {
     /*
     String msg = txtMsg.getText();
@@ -83,93 +97,93 @@ public class ChatFrame extends javax.swing.JFrame {
     }
     */
 
-    addComponent("","");
+    addComponent("", "");
+    System.out.println(height);
+    jScrollPane1.setPreferredSize(new Dimension(1021, height));
+    //jScrollPane1.revalidate();
+   jScrollPane1.repaint();
   }
 
-  
-
-
-  public void addComponent(String lblText,String position){
-
-        
-        JTextArea label =  createNewLabel("How the hell am I supposed to get a jury to believe you when I am not even sure that I do?! ",20);       
-        JLabel avatar =  createNewIamge(22,22);
-        JPanel panel = createNewPanel(label,avatar,pnlContent);
-        
-       
-        pnlContent.add(panel);
-        pnlContent.revalidate();
-        pnlContent.repaint();
-   
+  public void addComponent(String lblText, String position) {
+    JTextArea label = createNewLabel(
+      "How the hell am I supposed to get a jury to believe you when I am not even sure that I do?! ",
+      20
+    );
+    JLabel avatar = createNewIamge(22, 22);
+    JPanel panel = createNewPanel(label, avatar, pnlContent);
+    height+= panel.getPreferredSize().height;
+    nbrPanel++;
+    pnlContent.add(panel);
+    pnlContent.revalidate();
+    pnlContent.repaint();
+    refreshScrollPane();
   }
-  
-  public JPanel createNewPanel(JTextArea label,JLabel avatar,JPanel parent){
-      
-        JPanel panel = new JPanel();
-       
-               
-        panel.add(avatar);
-        panel.add(label); 
-        
-        panel.revalidate();
-        panel.repaint();
-        panel.setBorder(new EmptyBorder(5,5,5,5));
-        panel.setSize(panel.getPreferredSize().width, panel.getPreferredSize().height);
-        panel.setBackground(Color.RED);
-       
-        panel.setOpaque(true);
-        
-         if(parent.getComponentCount() > 0){
-             Component c = parent.getComponent(parent.getComponentCount()-1);
-             panel.setLocation(c.getLocation().x, c.getLocation().y + c.getPreferredSize().height+10);
-        }
-        
-        
-        return panel;
-      
-  }
-  
-  public JLabel createNewIamge(int height,int width){
-      
-      ImageIcon avatar = new ImageIcon(new ImageIcon("./src/images/harveyspecter.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 
-      JLabel label = new JLabel(avatar);
-      label.setSize(width, height);
-      label.setPreferredSize(new Dimension(width,height));
-      label.setOpaque(true);
-      return label;
-  }
-  
-  
-  
-  
-  public JTextArea createNewLabel(String txt,int positionX){
-     
-        JTextArea label = new JTextArea();
-        label.setBorder(new EmptyBorder(10,10,10,10));
-        label.setText(txt);
-        label.setEditable(false);
-        
-        int width = label.getPreferredSize().width;
-         
-        if(width > 400){
-            int height  = label.getPreferredSize().height;
-            label.setSize(400, (width/400) *height);
-            label.setLineWrap(true);
-        }
-        
-        label.setAlignmentX(50);        
-        label.setLocation(200, 0);
+  public JPanel createNewPanel(JTextArea label, JLabel avatar, JPanel parent) {
+    JPanel panel = new JPanel();
 
-     
-        label.setBackground(Color.decode("#435f7a"));
-        label.setForeground(Color.white);
-        label.setOpaque(true);
-        
-        return label;
-      
+    panel.add(avatar);
+    panel.add(label);
+
+    panel.revalidate();
+    panel.repaint();
+    panel.setBorder(new EmptyBorder(5, 5, 5, 5));
+    panel.setSize(
+      panel.getPreferredSize().width,
+      panel.getPreferredSize().height
+    );
+    panel.setBackground(Color.RED);
+
+    panel.setOpaque(true);
+
+    if (parent.getComponentCount() > 0) {
+      Component c = parent.getComponent(parent.getComponentCount() - 1);
+      panel.setLocation(
+        c.getLocation().x,
+        c.getLocation().y + c.getPreferredSize().height + 10
+      );
+    }
+
+    return panel;
   }
-  
+
+  public JLabel createNewIamge(int height, int width) {
+    ImageIcon avatar = new ImageIcon(
+      new ImageIcon("./src/images/harveyspecter.png")
+        .getImage()
+        .getScaledInstance(20, 20, Image.SCALE_DEFAULT)
+    );
+
+    JLabel label = new JLabel(avatar);
+    label.setSize(width, height);
+    label.setPreferredSize(new Dimension(width, height));
+    label.setOpaque(true);
+    return label;
+  }
+
+  public JTextArea createNewLabel(String txt, int positionX) {
+    JTextArea label = new JTextArea();
+    label.setBorder(new EmptyBorder(10, 10, 10, 10));
+    label.setText(txt);
+    label.setEditable(false);
+
+    int width = label.getPreferredSize().width;
+
+    if (width > 400) {
+      int height = label.getPreferredSize().height;
+      label.setSize(400, (width / 400) * height);
+      label.setLineWrap(true);
+    }
+
+    label.setAlignmentX(50);
+    label.setLocation(200, 0);
+
+    label.setBackground(Color.decode("#435f7a"));
+    label.setForeground(Color.white);
+    label.setOpaque(true);
+
+    return label;
+  }
 
   public void open() {
     this.setTitle("Chat");
@@ -179,7 +193,6 @@ public class ChatFrame extends javax.swing.JFrame {
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setVisible(true);
   }
-
 
   /**
    * This method is called from within the constructor to initialize the form.
@@ -196,6 +209,7 @@ public class ChatFrame extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         txtMsg = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
         pnlContent = new javax.swing.JPanel();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
@@ -230,7 +244,7 @@ public class ChatFrame extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1018, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,18 +283,22 @@ public class ChatFrame extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
+        jScrollPane1.setToolTipText("");
+
         pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
         pnlContentLayout.setHorizontalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 1078, Short.MAX_VALUE)
         );
         pnlContentLayout.setVerticalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 526, Short.MAX_VALUE)
+            .addGap(0, 548, Short.MAX_VALUE)
         );
+
+        jScrollPane1.setViewportView(pnlContent);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -288,19 +306,20 @@ public class ChatFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlContent, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1021, Short.MAX_VALUE))
+                .addGap(0, 8, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -362,6 +381,7 @@ public class ChatFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JTextField txtMsg;
     // End of variables declaration//GEN-END:variables

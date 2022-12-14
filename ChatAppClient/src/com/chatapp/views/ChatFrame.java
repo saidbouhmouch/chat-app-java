@@ -4,6 +4,7 @@
  */
 package com.chatapp.views;
 
+import com.chatapp.models.UserModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -32,7 +33,10 @@ public class ChatFrame extends javax.swing.JFrame {
 
     int height = 0;    
     int nbrPanel = 0;
+    UserModel senderUser  = new UserModel();    
+    UserModel receiverUser  = new UserModel();
 
+    
   Socket _socket;
   ObjectOutputStream _send;
   ObjectInputStream _received;
@@ -42,11 +46,43 @@ public class ChatFrame extends javax.swing.JFrame {
    */
   public ChatFrame() {
     initComponents();
+    
+   
+    retrieveSenderData(0);
+    retrieveReceiverData(1);
+            
     for (int i = 0; i < 19; i++) {
       addComponent("", "");
     }
-
+    
   }
+  
+  
+  public void retrieveSenderData(int userId){
+       senderUser.getUserById(userId);
+    
+     lblSenderName.setText(senderUser.getFirst_name()+" "+senderUser.getLast_name());
+     ImageIcon avatar = new ImageIcon(new ImageIcon(senderUser.getPicture()).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
+    lblSenderIcon.setIcon(avatar);
+    lblSenderIcon.setSize(60, 60);
+    lblSenderIcon.setPreferredSize(new Dimension(60, 60));
+    lblSenderIcon.setOpaque(true);
+      
+  }
+  
+  
+  
+  public void retrieveReceiverData(int userId){
+      receiverUser.getUserById(userId);
+     lblReceiverName.setText(receiverUser.getFirst_name()+" "+receiverUser.getLast_name());
+     ImageIcon avatar = new ImageIcon(new ImageIcon(receiverUser.getPicture()).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
+     lblReceiverIcon.setIcon(avatar);
+     lblReceiverIcon.setSize(60, 60);
+     lblReceiverIcon.setPreferredSize(new Dimension(60, 60));
+     lblReceiverIcon.setOpaque(true);
+  }
+  
+  
 
   public void initConnection() {
     try {
@@ -205,7 +241,11 @@ public class ChatFrame extends javax.swing.JFrame {
 
         jFrame1 = new javax.swing.JFrame();
         jPanel1 = new javax.swing.JPanel();
+        lblSenderName = new javax.swing.JLabel();
+        lblSenderIcon = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
+        lblReceiverName = new javax.swing.JLabel();
+        lblReceiverIcon = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         txtMsg = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -227,28 +267,53 @@ public class ChatFrame extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(44, 62, 80));
 
+        lblSenderName.setForeground(new java.awt.Color(255, 255, 255));
+        lblSenderName.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 332, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(lblSenderIcon)
+                .addGap(18, 18, 18)
+                .addComponent(lblSenderName, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSenderName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblSenderIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(245, 245, 245));
+
+        lblReceiverName.setText("Harvey Specter");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(39, 39, 39)
+                .addComponent(lblReceiverIcon)
+                .addGap(18, 18, 18)
+                .addComponent(lblReceiverName, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 92, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(34, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblReceiverName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblReceiverIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
         );
 
         jPanel3.setBackground(new java.awt.Color(245, 245, 245));
@@ -311,7 +376,7 @@ public class ChatFrame extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1021, Short.MAX_VALUE))
-                .addGap(0, 8, Short.MAX_VALUE))
+                .addGap(0, 50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -382,6 +447,10 @@ public class ChatFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblReceiverIcon;
+    private javax.swing.JLabel lblReceiverName;
+    private javax.swing.JLabel lblSenderIcon;
+    private javax.swing.JLabel lblSenderName;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JTextField txtMsg;
     // End of variables declaration//GEN-END:variables

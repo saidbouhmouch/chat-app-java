@@ -6,6 +6,7 @@ package com.chatapp.models;
 
 import com.chatapp.models.ConnexionModel;
 import java.sql.*;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -98,6 +99,24 @@ public class UserModel {
         this.status = status;
     }
     
+    public void getUserById(int id){
+        
+        if(id == 0){
+            this.username = "mike@";
+            this.first_name = "Mike";
+            this.last_name = "Ross";
+            this.picture = "./src/images/mikeross.png";
+            this.status = true;
+        }else{
+             this.username = "harvey@";
+            this.first_name = "Harvey";
+            this.last_name = "Specter";
+            this.picture = "./src/images/harveyspecter.png";
+            this.status = true;
+        }
+        
+    }
+    
     
     public int insert(){
     
@@ -146,18 +165,6 @@ public class UserModel {
          return _login;
     }
     
-    
-    
-    
-    
-    
-    
-     
-    
-    
-    
-            
-            
-       
+      
     
 }

@@ -50,9 +50,10 @@ public class ChatFrame extends javax.swing.JFrame {
    
     retrieveSenderData(0);
     retrieveReceiverData(1);
+    retrieveSearchIcon();
             
     for (int i = 0; i < 19; i++) {
-      addComponent("", "");
+      addComponent("", (i%2 == 0)? "right" :"");
     }
     
   }
@@ -81,6 +82,20 @@ public class ChatFrame extends javax.swing.JFrame {
      lblReceiverIcon.setPreferredSize(new Dimension(60, 60));
      lblReceiverIcon.setOpaque(true);
   }
+  
+  public void retrieveSearchIcon(){
+      
+     ImageIcon avatar = new ImageIcon(new ImageIcon("./src/images/search.png").getImage().getScaledInstance(24, 24, Image.SCALE_DEFAULT));
+     lblSearchIcon.setText("");
+     lblSearchIcon.setIcon(avatar);
+     lblSearchIcon.setBackground(Color.decode("#435F7A"));
+     lblSearchIcon.setBorder(new EmptyBorder(0, 10, 0, 5));
+     lblSearchIcon.setSize(24, 24);
+     lblSearchIcon.setPreferredSize(new Dimension(24, 24));
+     lblSearchIcon.setOpaque(true);
+  }
+  
+  
   
   
 
@@ -134,19 +149,30 @@ public class ChatFrame extends javax.swing.JFrame {
     */
 
     addComponent("", "");
-    System.out.println(height);
     jScrollPane1.setPreferredSize(new Dimension(1021, height));
     //jScrollPane1.revalidate();
    jScrollPane1.repaint();
   }
 
+  
   public void addComponent(String lblText, String position) {
+      
     JTextArea label = createNewLabel(
       "How the hell am I supposed to get a jury to believe you when I am not even sure that I do?! ",
       20
     );
+    
     JLabel avatar = createNewIamge(22, 22);
     JPanel panel = createNewPanel(label, avatar, pnlContent);
+   
+    
+    if(position.equals("right")){
+        int x = pnlContent.getPreferredSize().width - panel.getPreferredSize().width;
+        panel.setLocation(x,height);
+    }else{
+         panel.setLocation(0,height);
+    }
+    
     height+= panel.getPreferredSize().height;
     nbrPanel++;
     pnlContent.add(panel);
@@ -243,6 +269,11 @@ public class ChatFrame extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         lblSenderName = new javax.swing.JLabel();
         lblSenderIcon = new javax.swing.JLabel();
+        panelSearch = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        lblSearchIcon = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         lblReceiverName = new javax.swing.JLabel();
         lblReceiverIcon = new javax.swing.JLabel();
@@ -270,16 +301,60 @@ public class ChatFrame extends javax.swing.JFrame {
         lblSenderName.setForeground(new java.awt.Color(255, 255, 255));
         lblSenderName.setText("jLabel1");
 
+        panelSearch.setBackground(new java.awt.Color(67, 95, 122));
+
+        jTextField1.setBackground(new java.awt.Color(67, 95, 122));
+        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField1.setToolTipText("Search");
+        jTextField1.setBorder(null);
+
+        lblSearchIcon.setForeground(new java.awt.Color(67, 95, 122));
+        lblSearchIcon.setText("icon");
+
+        javax.swing.GroupLayout panelSearchLayout = new javax.swing.GroupLayout(panelSearch);
+        panelSearch.setLayout(panelSearchLayout);
+        panelSearchLayout.setHorizontalGroup(
+            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelSearchLayout.createSequentialGroup()
+                .addComponent(lblSearchIcon)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1))
+        );
+        panelSearchLayout.setVerticalGroup(
+            panelSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+            .addComponent(lblSearchIcon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jButton2.setBackground(new java.awt.Color(50, 70, 90));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/user_icon.png"))); // NOI18N
+        jButton2.setText("ajouter contact");
+        jButton2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
+
+        jButton3.setBackground(new java.awt.Color(50, 70, 90));
+        jButton3.setForeground(new java.awt.Color(255, 255, 255));
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/setting.png"))); // NOI18N
+        jButton3.setText("setting");
+        jButton3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(39, 39, 39)
                 .addComponent(lblSenderIcon)
                 .addGap(18, 18, 18)
                 .addComponent(lblSenderName, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -288,7 +363,13 @@ public class ChatFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSenderName, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblSenderIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(panelSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(245, 245, 245));
@@ -331,21 +412,21 @@ public class ChatFrame extends javax.swing.JFrame {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(55, 55, 55)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(txtMsg, javax.swing.GroupLayout.PREFERRED_SIZE, 844, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addGap(47, 47, 47))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtMsg, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jScrollPane1.setToolTipText("");
@@ -376,17 +457,18 @@ public class ChatFrame extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1021, Short.MAX_VALUE))
-                .addGap(0, 50, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -442,15 +524,20 @@ public class ChatFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblReceiverIcon;
     private javax.swing.JLabel lblReceiverName;
+    private javax.swing.JLabel lblSearchIcon;
     private javax.swing.JLabel lblSenderIcon;
     private javax.swing.JLabel lblSenderName;
+    private javax.swing.JPanel panelSearch;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JTextField txtMsg;
     // End of variables declaration//GEN-END:variables

@@ -4,7 +4,9 @@
  */
 package com.chatapp.views;
 
+import com.chatapp.service.GenerateComponent;
 import com.chatapp.models.UserModel;
+import com.chatapp.service.ClientService;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -24,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -31,15 +34,18 @@ import javax.swing.border.EmptyBorder;
  */
 public class ChatFrame extends javax.swing.JFrame {
 
-    int height = 0;    
-    int nbrPanel = 0;
-    UserModel senderUser  = new UserModel();    
-    UserModel receiverUser  = new UserModel();
+  int heightMessages = 0;
+  int nbrPanelMessages = 0;
 
-    
-  Socket _socket;
-  ObjectOutputStream _send;
-  ObjectInputStream _received;
+  int nbrPanelConversation = 0;
+  int heightPanelConversation = 0;
+
+  UserModel senderUser = new UserModel();
+  UserModel receiverUser = new UserModel();
+  GenerateComponent generateComponent = new GenerateComponent();
+  ClientService clientService;
+
+
 
   /**
    * Creates new form ChatFrame
@@ -47,97 +53,78 @@ public class ChatFrame extends javax.swing.JFrame {
   public ChatFrame() {
     initComponents();
     
-   
-    retrieveSenderData(0);
-    retrieveReceiverData(1);
+    clientService = ClientService.getInstance();
+
+    retrieveUserData(senderUser, 0, lblSenderName, lblSenderIcon);
+    retrieveUserData(receiverUser, 1, lblReceiverName, lblReceiverIcon);
+
     retrieveSearchIcon();
-            
-    for (int i = 0; i < 19; i++) {
-      addComponent("", (i%2 == 0)? "right" :"");
+
+    for (int i = 1; i < 19; i++) {
+      addMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ..", (i % 2 == 0) ? "right" : "");
+      
     }
     
-  }
-  
-  
-  public void retrieveSenderData(int userId){
-       senderUser.getUserById(userId);
-    
-     lblSenderName.setText(senderUser.getFirst_name()+" "+senderUser.getLast_name());
-     ImageIcon avatar = new ImageIcon(new ImageIcon(senderUser.getPicture()).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
-    lblSenderIcon.setIcon(avatar);
-    lblSenderIcon.setSize(60, 60);
-    lblSenderIcon.setPreferredSize(new Dimension(60, 60));
-    lblSenderIcon.setOpaque(true);
-      
-  }
-  
-  
-  
-  public void retrieveReceiverData(int userId){
-      receiverUser.getUserById(userId);
-     lblReceiverName.setText(receiverUser.getFirst_name()+" "+receiverUser.getLast_name());
-     ImageIcon avatar = new ImageIcon(new ImageIcon(receiverUser.getPicture()).getImage().getScaledInstance(60, 60, Image.SCALE_DEFAULT));
-     lblReceiverIcon.setIcon(avatar);
-     lblReceiverIcon.setSize(60, 60);
-     lblReceiverIcon.setPreferredSize(new Dimension(60, 60));
-     lblReceiverIcon.setOpaque(true);
-  }
-  
-  public void retrieveSearchIcon(){
-      
-     ImageIcon avatar = new ImageIcon(new ImageIcon("./src/images/search.png").getImage().getScaledInstance(24, 24, Image.SCALE_DEFAULT));
-     lblSearchIcon.setText("");
-     lblSearchIcon.setIcon(avatar);
-     lblSearchIcon.setBackground(Color.decode("#435F7A"));
-     lblSearchIcon.setBorder(new EmptyBorder(0, 10, 0, 5));
-     lblSearchIcon.setSize(24, 24);
-     lblSearchIcon.setPreferredSize(new Dimension(24, 24));
-     lblSearchIcon.setOpaque(true);
-  }
-  
-  
-  
-  
+    addConversation("Harvey Specter","./src/images/harveyspecter.png","Lorem ipsum dolor sit amet");    
+    addConversation("Louis Litt","./src/images/3.png","Lorem ipsum dolor sit amet");    
+    addConversation("Daniel Hardman","danielhardman.png","Lorem ipsum dolor sit amet..");
+    addConversation("Donna Paulsen","./src/images/donnapaulsen.png","Lorem ipsum dolor sit amet...");
+    addConversation("Harold Gunderson","./src/images/haroldgunderson.png","Lorem ipsum dolor sit amet...");
+    addConversation("Jessica Pearson","./src/images/jessicapearson.png","Lorem ipsum dolor sit amet...");
+    addConversation("Rachel Zane","./src/images/rachelzane.png","Lorem ipsum dolor sit amet...");
 
-  public void initConnection() {
-    try {
-      _socket = new Socket("localhost", 4001);
-      _received = new ObjectInputStream(_socket.getInputStream());
-      _send = new ObjectOutputStream(_socket.getOutputStream());
-    } catch (Exception e) {
-      Logger.getLogger(ChatFrame.class.getName()).log(Level.SEVERE, null, e);
-      e.printStackTrace();
-    }
   }
 
-  public void SendMessage(String msg) {
-    try {
-      _send.writeObject(msg);
-    } catch (Exception e) {
-      System.out.println("error ");
-      Logger.getLogger(ChatFrame.class.getName()).log(Level.SEVERE, null, e);
-      e.printStackTrace();
-    }
+  public void retrieveUserData(
+    UserModel user,
+    int userId,
+    JLabel lblName,
+    JLabel lblIcon
+  ) {
+    user.getUserById(userId);
+
+    lblName.setText(user.getFirst_name() + " " + user.getLast_name());
+    ImageIcon avatar = new ImageIcon(
+      new ImageIcon(user.getPicture())
+        .getImage()
+        .getScaledInstance(60, 60, Image.SCALE_DEFAULT)
+    );
+
+    lblIcon.setSize(60, 60);
+    lblIcon.setPreferredSize(new Dimension(60, 60));
+    lblIcon.setIcon(avatar);
+    lblIcon.setOpaque(true);
   }
 
-  // TODO : add thead
-  public void ReciveMessage() {
-    String msg;
-    while (true) {
-      try {
-        msg = (String) _received.readObject();
-        // TODO : function retrieve data
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+  public void retrieveSearchIcon() {
+    ImageIcon avatar = new ImageIcon(
+      new ImageIcon("./src/images/search.png")
+        .getImage()
+        .getScaledInstance(24, 24, Image.SCALE_DEFAULT)
+    );
+    lblSearchIcon.setText("");
+    lblSearchIcon.setIcon(avatar);
+    lblSearchIcon.setBackground(Color.decode("#435F7A"));
+    lblSearchIcon.setBorder(new EmptyBorder(0, 10, 0, 5));
+    lblSearchIcon.setSize(24, 24);
+    lblSearchIcon.setPreferredSize(new Dimension(24, 24));
+    lblSearchIcon.setOpaque(true);
   }
 
-  public void refreshScrollPane(){
-     pnlContent.setPreferredSize(new Dimension(1021,height+ (nbrPanel * 10)));
-     jScrollPane1.setViewportView(pnlContent);
-     jScrollPane1.revalidate();
-     jScrollPane1.repaint();
+  
+
+  public void refreshScrollPane() {
+    pnlContent.setPreferredSize(new Dimension(1000, heightMessages + (nbrPanelMessages * 10)));
+    jScrollPane1.setViewportView(pnlContent);
+    jScrollPane1.revalidate();
+    jScrollPane1.repaint();
+  }
+  
+   public void refreshScrollPaneConversation(){
+    pnlConversation.setPreferredSize(new Dimension(300, heightPanelConversation + (nbrPanelConversation * 10)));
+    scrollPaneConversation.setViewportView(pnlConversation);
+    scrollPaneConversation.revalidate();
+    scrollPaneConversation.repaint();
   }
 
   public void handleSend() {
@@ -148,104 +135,79 @@ public class ChatFrame extends javax.swing.JFrame {
     }
     */
 
-    addComponent("", "");
-    jScrollPane1.setPreferredSize(new Dimension(1021, height));
+    addMessage("", "");
+    jScrollPane1.setPreferredSize(new Dimension(1021, heightMessages));
     //jScrollPane1.revalidate();
-   jScrollPane1.repaint();
+    jScrollPane1.repaint();
   }
 
-  
-  public void addComponent(String lblText, String position) {
+  public void addMessage(String lblText, String position) {
       
-    JTextArea label = createNewLabel(
-      "How the hell am I supposed to get a jury to believe you when I am not even sure that I do?! ",
+      String img = "./src/images/mikeross.png";
+      
+      if (position.equals("right")) {
+      img ="./src/images/harveyspecter.png";
+    }
+      
+    JTextArea label = generateComponent.newMessageLabel(
+      lblText,
       20
     );
+
+    JLabel avatar = generateComponent.newAvatarIcon(
+      22,
+      22,
+      img
+    );
     
-    JLabel avatar = createNewIamge(22, 22);
-    JPanel panel = createNewPanel(label, avatar, pnlContent);
-   
-    
-    if(position.equals("right")){
-        int x = pnlContent.getPreferredSize().width - panel.getPreferredSize().width;
-        panel.setLocation(x,height);
-    }else{
-         panel.setLocation(0,height);
+    JPanel panel = generateComponent.newMessagePanel(label, avatar, pnlContent);
+
+    if (position.equals("right")) {
+      int x =
+        pnlContent.getPreferredSize().width - panel.getPreferredSize().width;
+      panel.setLocation(x, heightMessages);
+    } else {
+      panel.setLocation(0, heightMessages);
     }
-    
-    height+= panel.getPreferredSize().height;
-    nbrPanel++;
+
+    heightMessages += panel.getPreferredSize().height;
+    nbrPanelMessages++;
     pnlContent.add(panel);
     pnlContent.revalidate();
     pnlContent.repaint();
     refreshScrollPane();
   }
-
-  public JPanel createNewPanel(JTextArea label, JLabel avatar, JPanel parent) {
-    JPanel panel = new JPanel();
-
-    panel.add(avatar);
-    panel.add(label);
-
-    panel.revalidate();
-    panel.repaint();
-    panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-    panel.setSize(
-      panel.getPreferredSize().width,
-      panel.getPreferredSize().height
+  
+  
+  public void addConversation(String userName,String img,String lastMsg) {
+      
+    JTextArea conversation = generateComponent.newConversationLabel(
+      userName,
+      lastMsg,
+      20
     );
-    panel.setBackground(Color.RED);
+    
 
-    panel.setOpaque(true);
-
-    if (parent.getComponentCount() > 0) {
-      Component c = parent.getComponent(parent.getComponentCount() - 1);
-      panel.setLocation(
-        c.getLocation().x,
-        c.getLocation().y + c.getPreferredSize().height + 10
-      );
-    }
-
-    return panel;
-  }
-
-  public JLabel createNewIamge(int height, int width) {
-    ImageIcon avatar = new ImageIcon(
-      new ImageIcon("./src/images/harveyspecter.png")
-        .getImage()
-        .getScaledInstance(20, 20, Image.SCALE_DEFAULT)
+    JLabel avatar = generateComponent.newAvatarIcon(
+      22,
+      22,
+      img
     );
+    
+    JPanel panel = generateComponent.newConversationPanel(conversation, avatar, pnlConversation);
 
-    JLabel label = new JLabel(avatar);
-    label.setSize(width, height);
-    label.setPreferredSize(new Dimension(width, height));
-    label.setOpaque(true);
-    return label;
+    heightPanelConversation += panel.getPreferredSize().height;
+    nbrPanelConversation++;
+    pnlConversation.add(panel);
+    pnlConversation.revalidate();
+    pnlConversation.repaint();
+    refreshScrollPaneConversation();
   }
+  
+  
+  
 
-  public JTextArea createNewLabel(String txt, int positionX) {
-    JTextArea label = new JTextArea();
-    label.setBorder(new EmptyBorder(10, 10, 10, 10));
-    label.setText(txt);
-    label.setEditable(false);
 
-    int width = label.getPreferredSize().width;
-
-    if (width > 400) {
-      int height = label.getPreferredSize().height;
-      label.setSize(400, (width / 400) * height);
-      label.setLineWrap(true);
-    }
-
-    label.setAlignmentX(50);
-    label.setLocation(200, 0);
-
-    label.setBackground(Color.decode("#435f7a"));
-    label.setForeground(Color.white);
-    label.setOpaque(true);
-
-    return label;
-  }
 
   public void open() {
     this.setTitle("Chat");
@@ -274,6 +236,9 @@ public class ChatFrame extends javax.swing.JFrame {
         lblSearchIcon = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        scrollPaneConversation = new javax.swing.JScrollPane();
+        jPanel4 = new javax.swing.JPanel();
+        pnlConversation = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lblReceiverName = new javax.swing.JLabel();
         lblReceiverIcon = new javax.swing.JLabel();
@@ -338,6 +303,32 @@ public class ChatFrame extends javax.swing.JFrame {
         jButton3.setText("setting");
         jButton3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 255, 255), 1, true));
 
+        pnlConversation.setBackground(new java.awt.Color(44, 62, 80));
+
+        javax.swing.GroupLayout pnlConversationLayout = new javax.swing.GroupLayout(pnlConversation);
+        pnlConversation.setLayout(pnlConversationLayout);
+        pnlConversationLayout.setHorizontalGroup(
+            pnlConversationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 333, Short.MAX_VALUE)
+        );
+        pnlConversationLayout.setVerticalGroup(
+            pnlConversationLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 515, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlConversation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnlConversation, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        scrollPaneConversation.setViewportView(jPanel4);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -349,11 +340,14 @@ public class ChatFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(lblSenderName, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(scrollPaneConversation)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -365,7 +359,9 @@ public class ChatFrame extends javax.swing.JFrame {
                     .addComponent(lblSenderIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(panelSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrollPaneConversation)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -399,7 +395,11 @@ public class ChatFrame extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(245, 245, 245));
 
-        txtMsg.setText("jTextField1");
+        txtMsg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMsgActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("Send");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -480,6 +480,10 @@ public class ChatFrame extends javax.swing.JFrame {
     handleSend();
   }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void txtMsgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMsgActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMsgActionPerformed
+
   /**
    * @param args the command line arguments
    */
@@ -530,6 +534,7 @@ public class ChatFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblReceiverIcon;
@@ -539,6 +544,8 @@ public class ChatFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblSenderName;
     private javax.swing.JPanel panelSearch;
     private javax.swing.JPanel pnlContent;
+    private javax.swing.JPanel pnlConversation;
+    private javax.swing.JScrollPane scrollPaneConversation;
     private javax.swing.JTextField txtMsg;
     // End of variables declaration//GEN-END:variables
 }

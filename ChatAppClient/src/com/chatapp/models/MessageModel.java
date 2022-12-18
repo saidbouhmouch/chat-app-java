@@ -8,6 +8,6 @@ package com.chatapp.models;
  *
  * @author mac
  */
-public class MessagePanel {
+public class MessageModel {
     
 }
